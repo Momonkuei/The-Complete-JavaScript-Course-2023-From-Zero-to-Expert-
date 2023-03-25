@@ -81,9 +81,10 @@ const displayMovements = function (movements) {
 };
 
 /* 加總總和 */
-const calcPrintBalance = function (movements) {
-  const balance = movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${balance} €`;
+const calcPrintBalance = function (acc) {
+  acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
+  //在帳戶茲勛中增加新的值，balance總和
+  labelBalance.textContent = `${acc.balance} €`;
 };
 
 const calcDisplaySummary = function (acc) {
@@ -126,6 +127,15 @@ const createUsernames = function (accounts) {
 
 createUsernames(accounts);
 
+const updateUI = function (acc) {
+  // Display movements
+  displayMovements(acc.movements);
+  // Display balance
+  calcPrintBalance(acc);
+  // Display summary
+  calcDisplaySummary(acc);
+};
+
 //需要一個變量在外面記住，登入後的資訊
 let currentAccount;
 
@@ -151,13 +161,40 @@ btnLogin.addEventListener('click', function (e) {
     //去除在登入 input 欄位中的點擊狀態
     inputLoginPin.blur();
 
-    // Display movements
-    displayMovements(currentAccount.movements);
-    // Display balance
-    calcPrintBalance(currentAccount.movements);
-    // Display summary
-    calcDisplaySummary(currentAccount);
+    // 把 displayMovements /calcPrintBalance/ calcDisplaySummary 整合成一個介面更新UI
+    updateUI(currentAccount);
   }
+});
+
+btnTransfer.addEventListener('click', function (e) {
+  //防止默認行為
+  e.preventDefault();
+
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+  console.log(amount, receiverAcc);
+
+  //此時外面有用 currentAccount 來紀錄登入的帳號
+  //限制三個條件
+  // 轉帳金額大於０ 轉帳使用者是存在的 轉帳金額小於等於帳號總和 不能傳給自己
+  if (
+    amount > 0 &&
+    receiverAcc &&
+    currentAccount.balance >= amount &&
+    receiverAcc?.username !== currentAccount.username
+  ) {
+    // Doing the transfer
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(amount);
+
+    //更新用戶介面
+    updateUI(currentAccount);
+  }
+  //清空輸入鑾誒
+  inputTransferAmount.value = inputTransferTo.value = '';
+  inputTransferTo.blur();
 });
 
 /////////////////////////////////////////////////
