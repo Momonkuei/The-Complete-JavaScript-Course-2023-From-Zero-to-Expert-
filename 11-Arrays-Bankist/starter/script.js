@@ -197,6 +197,27 @@ btnTransfer.addEventListener('click', function (e) {
   inputTransferTo.blur();
 });
 
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  console.log('Delete');
+  const confirmUser = inputCloseUsername.value;
+  const confirmPIN = Number(inputClosePin.value);
+
+  if (
+    confirmUser === currentAccount.username &&
+    confirmPIN === currentAccount.pin
+  ) {
+    // findIndex 跟 indexOf 很像，但是他可以運負責的運算式來處理
+    const index = accounts.findIndex(
+      acc => acc.username === currentAccount.username
+    );
+    console.log(index);
+    accounts.splice(index, 1);
+    containerApp.style.opacity = 0;
+    confirmUser = confirmPIN = '';
+  }
+});
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
