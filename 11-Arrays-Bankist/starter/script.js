@@ -197,6 +197,21 @@ btnTransfer.addEventListener('click', function (e) {
   inputTransferTo.blur();
 });
 
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    //Add movement
+    currentAccount.movements.push(amount);
+
+    //Update UI
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value = '';
+});
+
 btnClose.addEventListener('click', function (e) {
   e.preventDefault();
   console.log('Delete');
@@ -231,3 +246,12 @@ const currencies = new Map([
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
+
+console.log(movements.every(mov => mov > 0)); //false
+console.log(account4.movements.every(mov => mov > 0)); //true
+
+// Separate callback
+const deposit = mov => mov > 0;
+console.log(movements.some(deposit)); //true
+console.log(movements.every(deposit)); //false
+console.log(movements.filter(deposit)); //[200, 450, 3000, 70, 1300]
