@@ -61,9 +61,14 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = ``;
-  movements.forEach(function (mov, i) {
+
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  console.log(movs);
+
+  movs.forEach(function (mov, i) {
     //依據 mov 為正負值 來判斷 標籤的樣式
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
@@ -233,6 +238,15 @@ btnClose.addEventListener('click', function (e) {
   }
 });
 
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  console.log(currentAccount.movements);
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
+});
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
@@ -247,11 +261,37 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
 
-console.log(movements.every(mov => mov > 0)); //false
-console.log(account4.movements.every(mov => mov > 0)); //true
+const ownerss = ['Jonas', 'Zach', 'Adam', 'Martha'];
+console.log(ownerss.sort());
+// ['Adam', 'Jonas', 'Martha', 'Zach'];
+//a~z 的排序
 
-// Separate callback
-const deposit = mov => mov > 0;
-console.log(movements.some(deposit)); //true
-console.log(movements.every(deposit)); //false
-console.log(movements.filter(deposit)); //[200, 450, 3000, 70, 1300]
+//Numbers
+//正序排列
+//假設 a: 450 ,b:-400
+//return < 0 A ,B (keep order)
+// return > 0 B,A (switch order)
+movements.sort((a, b) => {
+  if (a > b) return 1; //數字不重要，只要大於０
+  if (a < b) return -1;
+});
+
+// 更改為 a-b
+
+movements.sort((a, b) => a - b);
+
+console.log(movements);
+// [-650, -400, -130, 70, 200, 450, 1300, 3000]
+
+//反序排列
+movements.sort((a, b) => {
+  if (a > b) return -1;
+  if (a < b) return 1;
+});
+
+// 更改為 b-a
+
+movements.sort((a, b) => b - a);
+
+console.log(movements);
+// [3000, 1300, 450, 200, 70, -130, -400, -650]
