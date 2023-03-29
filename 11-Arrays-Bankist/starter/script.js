@@ -261,37 +261,51 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
 
-const ownerss = ['Jonas', 'Zach', 'Adam', 'Martha'];
-console.log(ownerss.sort());
-// ['Adam', 'Jonas', 'Martha', 'Zach'];
-//a~z 的排序
+console.log([1, 2, 3, 4, 5, 6, 7]);
+console.log(new Array(1, 2, 3, 4, 5, 6, 7));
 
-//Numbers
-//正序排列
-//假設 a: 450 ,b:-400
-//return < 0 A ,B (keep order)
-// return > 0 B,A (switch order)
-movements.sort((a, b) => {
-  if (a > b) return 1; //數字不重要，只要大於０
-  if (a < b) return -1;
+const x = new Array(7);
+console.log(x);
+//遠以為只有一個值 ７，但卻是  (7) [空白 × 7]
+console.log(x.map(() => 5)); //(7) [空白 × 7]
+
+// console.log(x.fill(1));
+//(7) [1, 1, 1, 1, 1, 1, 1]
+
+console.log(x.fill(1, 3, 5));
+//(7) [空白 × 3, 1, 1, 空白 × 2]
+
+// Array.from
+const y = Array.from({ length: 7 }, () => 1);
+console.log(y);
+//(7) [1, 1, 1, 1, 1, 1, 1]
+
+const z = Array.from({ length: 7 }, (cur, i) => i + 1);
+console.log(z);
+//(7) [1, 2, 3, 4, 5, 6, 7]
+
+const z_1 = Array.from({ length: 7 }, (_, i) => i + 1);
+console.log(z_1);
+//(7) [1, 2, 3, 4, 5, 6, 7]
+
+// const rolls = Array.from({ length: 100 }, (_, i) =>
+//   Math.floor(Math.random() * 7)
+// );
+
+// console.log(rolls);
+
+// 將 nodelist 轉換為 array 用 array.from()是最好的
+
+labelBalance.addEventListener('click', function () {
+  const movementUI = Array.from(
+    document.querySelectorAll('.movements__value'),
+    el => Number(el.textContent.replace('€', ''))
+  );
+  console.log(movementUI);
+
+  //另一種把 Nodelist 轉換為array 的方式
+
+  const movementUI2 = [...document.querySelectorAll('.movements__value')];
+
+  //但使用這種方式 map function 需要另外施作
 });
-
-// 更改為 a-b
-
-movements.sort((a, b) => a - b);
-
-console.log(movements);
-// [-650, -400, -130, 70, 200, 450, 1300, 3000]
-
-//反序排列
-movements.sort((a, b) => {
-  if (a > b) return -1;
-  if (a < b) return 1;
-});
-
-// 更改為 b-a
-
-movements.sort((a, b) => b - a);
-
-console.log(movements);
-// [3000, 1300, 450, 200, 70, -130, -400, -650]
