@@ -261,51 +261,145 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
 
-console.log([1, 2, 3, 4, 5, 6, 7]);
-console.log(new Array(1, 2, 3, 4, 5, 6, 7));
+// const bankDepositSum = accounts.map(acc => acc.movements).flat();
+// 等同於
+const bankDepositSum = accounts
+  .flatMap(acc => acc.movements)
+  .filter(mov => mov > 0)
+  .reduce((sum, cur) => sum + cur, 0);
 
-const x = new Array(7);
-console.log(x);
-//遠以為只有一個值 ７，但卻是  (7) [空白 × 7]
-console.log(x.map(() => 5)); //(7) [空白 × 7]
+console.log(bankDepositSum);
 
-// console.log(x.fill(1));
-//(7) [1, 1, 1, 1, 1, 1, 1]
+//計算有多少個至少存1000 美元的款項
+// const numDeposits1000 = accounts
+//   .flatMap(acc => acc.movements)
+//   .filter(mov => mov > 1000).length;
+// console.log(numDeposits1000);
 
-console.log(x.fill(1, 3, 5));
-//(7) [空白 × 3, 1, 1, 空白 × 2]
+//另一種做法
 
-// Array.from
-const y = Array.from({ length: 7 }, () => 1);
-console.log(y);
-//(7) [1, 1, 1, 1, 1, 1, 1]
+const numDeposits1000 = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((count, cur) => (cur > 1000 ? count + 1 : count), 0);
+console.log(numDeposits1000); //0
 
-const z = Array.from({ length: 7 }, (cur, i) => i + 1);
-console.log(z);
-//(7) [1, 2, 3, 4, 5, 6, 7]
+let a = 10;
+console.log(a++); //10 //雖然 a 值 增加了，但是它顯示的是以前的值
+console.log(a); //11
 
-const z_1 = Array.from({ length: 7 }, (_, i) => i + 1);
-console.log(z_1);
-//(7) [1, 2, 3, 4, 5, 6, 7]
+// 3
+const sums = accounts
+  .flatMap(acc => acc.movements)
+  .reduce(
+    (sums, cur) => {
+      cur > 0 ? (sums.deposit += cur) : (sums.withdrawals += cur);
 
-// const rolls = Array.from({ length: 100 }, (_, i) =>
-//   Math.floor(Math.random() * 7)
-// );
-
-// console.log(rolls);
-
-// 將 nodelist 轉換為 array 用 array.from()是最好的
-
-labelBalance.addEventListener('click', function () {
-  const movementUI = Array.from(
-    document.querySelectorAll('.movements__value'),
-    el => Number(el.textContent.replace('€', ''))
+      return sums;
+    },
+    { deposit: 0, withdrawals: 0 }
   );
-  console.log(movementUI);
 
-  //另一種把 Nodelist 轉換為array 的方式
+console.log(sums);
 
-  const movementUI2 = [...document.querySelectorAll('.movements__value')];
+const { deposit, withdrawals } = accounts
+  .flatMap(acc => acc.movements)
+  .reduce(
+    (sums, cur) => {
+      // cur > 0 ? (sums.deposit += cur) : (sums.withdrawals += cur);
+      sums[cur > 0 ? 'deposit' : 'withdrawals'] += cur;
+      return sums;
+    },
+    { deposit: 0, withdrawals: 0 }
+  );
 
-  //但使用這種方式 map function 需要另外施作
+console.log(deposit, withdrawals);
+
+// 4.
+// this is a nice title => This Is a Nice Title
+const convertTitleCase = function (title) {
+  const capitalize = str => str[0].toUpperCase() + str.slice(1);
+  const exceptions = ['a', 'an', 'and', 'the', 'but', 'or', 'on', 'in', 'with'];
+  const titleCase = title
+    .toLocaleLowerCase()
+    .split(' ')
+    .map(word => (exceptions.includes(word) ? word : capitalize(word)))
+    .join(' ');
+  return titleCase;
+};
+
+console.log(convertTitleCase('this is a nice title.'));
+console.log(convertTitleCase('this is a LONG title but not too long.'));
+console.log(convertTitleCase('and here is another title with an EXAMPLE'));
+
+const dogs = [
+  { weight: 22, curFood: 250, owners: ['Alice', 'Bob'] },
+  { weight: 8, curFood: 200, owners: ['Matilda'] },
+  { weight: 13, curFood: 275, owners: ['Sarah', 'John'] },
+  { weight: 32, curFood: 340, owners: ['Michael'] },
+];
+
+//1
+dogs.forEach(dog => (dog.recFood = Math.trunc(dog.weight ** 0.75 * 28)));
+
+console.log(dogs);
+
+//2
+const sarahsDog = dogs.filter(dog => dog.owners[0] === 'Sarah');
+console.log(sarahsDog);
+console.log(sarahsDog.curFood >= sarahsDog.recFood ? 'musch' : 'little');
+
+// 使用 find
+const dogSarah = dogs.find(dog => dog.owners.includes('Sarah'));
+console.log(dogSarah);
+//{weight: 13, curFood: 275, owners: Array(2), recFood: 191}
+console.log(
+  `Sarah's dog is eating too ${
+    dogSarah.curFood > dogSarah.recFood ? 'much' : 'little'
+  }`
+);
+//Sarah's dog is eating too much
+
+const ownersEatTooMuch = dogs
+  .filter(dog => dog.curFood > dog.recFood)
+  .flatMap(dog => dog.owners);
+const ownersEatTooLittle = dogs
+  .filter(dog => dog.curFood < dog.recFood)
+  .flatMap(dog => dog.owners);
+console.log('ownersEatTooMuch', ownersEatTooMuch);
+console.log('ownersEatTooLittle', ownersEatTooLittle);
+
+// 4.
+
+console.log(`${ownersEatTooMuch.join(' and ')}'s dogs eat too much`);
+
+console.log(`${ownersEatTooLittle.join(' and ')}'s dogs eat too much`);
+
+// 5
+
+console.log(dogs.some(dog => dog.curFood === dog.recFood));
+//false
+
+//6
+console.log(
+  dogs.some(
+    dog => dog.curFood > dog.curFood * 0.9 && dog.curFood < dog.curFood * 1.1
+  )
+);
+//true
+
+const checkEationgOkay = dog =>
+  dog.curFood > dog.recFood * 0.9 && dog.curFood < dog.recFood * 1.1;
+
+console.log(dogs.some(checkEationgOkay));
+
+//7
+
+console.log(dogs.filter(checkEationgOkay));
+
+//8.
+
+const dogsSorted = dogs.slice().sort((a, b) => {
+  return a.recFood - b.recFood;
 });
+
+console.log(dogsSorted);
