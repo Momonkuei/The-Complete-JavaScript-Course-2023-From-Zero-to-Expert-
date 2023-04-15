@@ -104,52 +104,23 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
 
 //////////////////////
 
-// const h1 = document.querySelector('h1');
+//193. DOM Traversing
 
-// const alertH1 = function (e) {
-//   alert('addEventListener : Great ! You are reading the heading :D');
+const h1 = document.querySelector('h1');
 
-//   // h1.removeEventListener('mouseenter', alertH1);
-// };
+//Going downwards : child
+console.log(h1.querySelectorAll('.highlight'));
+console.log(h1.childNodes);
+//NodeList(9) [text, comment, text, span.highlight, text, br, text, span.highlight, text]
 
-// h1.addEventListener('mouseenter', alertH1);
+console.log(h1.children);
+//HTMLCollection(3) [span.highlight, br, span.highlight]
+//////////////////////
 
-// h1.addEventListener('mouseenter', function (e) {
-//   alert('addEventListener : Great ! You are reading the heading :D');
-// });
+//設置h1第一個元素樣式
+h1.firstElementChild.style.color = 'white';
 
-// h1.onmouseenter = function (e) {
-//   alert('addEventListener : Great ! You are reading the heading :D');
-// };
+//設置h1最後一個個元素樣式
+h1.lastElementChild.style.color = 'orangered';
 
-// setTimeout(() => h1.removeEventListener('mouseenter', alertH1));
-
-// const randomInt = (min, max) =>
-//   Math.floor(Math.random() * (max - min + 1) + min);
-
-// const randomColor = () =>
-//   `rgb(${randomInt(0, 255)},${randomInt(0, 255)},${randomInt(0, 255)})`;
-
-// document.querySelector('.nav__link').addEventListener('click', function (e) {
-//   this.style.backgroundColor = randomColor();
-//   console.log('Link', e.target, e.currentTarget);
-//   console.log(e.currentTarget === this);
-
-//   //Stop propagation
-//   // e.stopPropagation();
-//   //不會影響到父元素了
-// });
-
-// document.querySelector('.nav__links').addEventListener('click', function (e) {
-//   this.style.backgroundColor = randomColor();
-//   console.log('Container', e.target, e.currentTarget);
-// });
-
-// document.querySelector('.nav').addEventListener(
-//   'click',
-//   function (e) {
-//     this.style.backgroundColor = randomColor();
-//     console.log('Nav', e.target, e.currentTarget);
-//   },
-//   true
-// );
+//Going upwards : parents
