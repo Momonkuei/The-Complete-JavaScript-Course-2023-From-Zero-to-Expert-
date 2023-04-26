@@ -2,6 +2,7 @@
 
 const Person = function (firstName, birthYear) {
   // Instance properties實例屬性
+  console.log(this);
   (this.firstName = firstName), (this.birthYear = birthYear);
 
   // never to use regular function
@@ -125,3 +126,84 @@ console.log(bmw);
 const mercedes = new Cars('Mercedes', 95);
 
 console.log(mercedes);
+
+//class expression
+// const PersonCl = class {};
+
+//class declaration
+class PersonCl {
+  constructor(fullName, birthYear) {
+    this.fullName = fullName;
+    this.birthYear = birthYear;
+  }
+
+  //Methods will be added to .prototype property
+  //方法將被添加到 .prototype 屬性
+  calcAge() {
+    console.log(2037 - this.birthYear);
+  }
+
+  great() {
+    console.log(`Hey ${this.firstName}`);
+  }
+
+  get age() {
+    return 2037 - this.birthYear;
+  }
+
+  set fullName(name) {
+    console.log(name);
+    if (name.includes(' ')) {
+      this._fullName = name;
+    } else {
+      alert(`${name} is not a full name`);
+    }
+  }
+
+  get fullName() {
+    return this._fullName;
+  }
+}
+
+const jessica = new PersonCl('Jessica Davis', 1996);
+console.log(jessica);
+console.log(jessica.age); //41
+
+// PersonCl {firstName: 'Jessica', birthYear: 1996}
+
+jessica.calcAge(); //41
+
+console.log(jessica.__proto__ === PersonCl.prototype); //true
+
+// PersonCl.prototype.great = function () {
+//   console.log(`Hey ${this.firstName}`);
+// };
+
+jessica.great();
+//Hey Jessica
+
+// 1.Classes are Not hoisted
+// 2.Classes are first-class citizens
+// 3.Classes are executed in stric mode
+
+const walter = new PersonCl('Walter White', 1965);
+
+const account = {
+  owner: 'Jonas',
+  movements: [200, 530, 120, 300],
+
+  get latest() {
+    return this.movements.slice(-1).pop();
+  },
+
+  set latest(mov) {
+    this.movements.push(mov);
+  },
+};
+
+console.log(account.latest);
+//300
+
+account.latest = 50;
+console.log(account.movements);
+//(5) [200, 530, 120, 300, 50]
